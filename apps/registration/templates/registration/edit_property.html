@@ -1,0 +1,64 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}Edit Property | {% endblock %}
+
+{% block styles %}
+<style>
+    .property-form-container {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .property-form-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Custom Styles for Edit Property Page */
+    .container p {
+        margin-bottom: 20px;
+    }
+
+    .container {
+        margin-bottom: 30px;
+    }
+
+    .inner {
+        padding: 10px 100px;
+    }
+
+    .control {
+        text-align: center;
+    }
+
+    .control button {
+        width: 220px;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="container">
+    <div class="property-form-container">
+        <p><a href="{% url 'profile' %}">← Back to Profile</a></p>
+        <h1 class="title">Edit Property</h1>
+        <form method="post" action="." enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-dark btn-submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

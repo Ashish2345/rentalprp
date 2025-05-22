@@ -1,0 +1,283 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{% static '/core/css/base.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  {% block styles %}{% endblock styles %}
+
+  <style>
+    .active {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar Section -->
+  <section id="heading">
+    <div class="heading_container">
+      <a href="{% url 'home' %}"><img class="logo" src="{% static '/core/images/logo1.png' %}" alt="Logo"></a>
+
+      <nav>
+        <ul class="nav_linkss">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'about' %}">About Us</a></li>
+          <li><a href="{% url 'blog' %}">Blog</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </nav>
+
+      {% if request.user.is_authenticated %}
+        <a class="nav_login" href="{% url 'logout' %}"><button class="buttons">Logout</button></a>
+      {% else %}
+        <a class="nav_login" href="{% url 'login' %}"><button class="buttons">Login</button></a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Main Page Content -->
+  {% block content %}
+  {% endblock %}
+
+  <!-- Footer Section -->
+  <section id="footer">
+    <div class="social">
+      <a href="https://www.instagram.com/"><i class="icon fab fa-instagram"></i></a>
+      <a href="https://www.facebook.com/"><i class="icon fab fa-facebook"></i></a>
+      <a href="#"><i class="icon fab fa-twitter"></i></a>
+    </div>
+
+    <ul class="list">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'blog' %}">Blog</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+
+    <p class="copyright">Home Rental &copy; 2025 &#124; All rights reserved</p>
+  </section>
+
+<!-- Main JS File -->
+<script src="{% static '/core/js/base.js' %}"></script>
+
+{% block script %}{% endblock script %}
+
+<!-- =============== Chatbot Floating Icon + Popup =============== -->
+
+<!-- Floating Chatbot Icon -->
+<img id="chatbot-icon" src="{% static '/core/images/chatbot.jpg' %}" alt="Chatbot Icon" />
+
+<!-- Popup Chat Window -->
+<div id="chatbot-popup">
+    <div id="chat-messages"></div>
+    <div id="chat-inputs">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
+</div>
+
+<!-- Chatbot Styling -->
+<style>
+  /* Chatbot Icon */
+  #chatbot-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 65px;
+      height: 65px;
+      cursor: pointer;
+      z-index: 1000;
+      border-radius: 50%;
+      background-color: transparent;
+      animation: blink 1.5s infinite alternate;
+      border: none;
+  }
+  @keyframes blink {
+      from { box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); }
+      to { box-shadow: 0 0 20px rgba(0, 123, 255, 0.8); }
+  }
+
+  /* Popup */
+  #chatbot-popup {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 350px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 10px;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: popupAnimation 0.3s ease;
+  }
+
+  /* Messages */
+  #chat-messages {
+      height: 320px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f7f7f7;
+      border-radius: 8px;
+      font-size: 14px;
+  }
+
+  /* Chat Bubbles */
+  .user-message, .bot-message {
+      margin: 5px 0;
+      padding: 8px 12px;
+      border-radius: 18px;
+      display: inline-block;
+      max-width: 80%;
+      font-size: 14px;
+  }
+  .user-message {
+      background: #d1e7ff;
+      align-self: flex-end;
+      text-align: right;
+  }
+  .bot-message {
+      background: #e5e5e5;
+      text-align: left;
+  }
+
+  /* Input Row */
+  #chat-inputs {
+      display: flex;
+      gap: 5px;
+  }
+
+  /* Input Field */
+  #user-input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  /* Buttons */
+  #send-button, #clear-button {
+      padding: 10px 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+  #send-button:hover, #clear-button:hover {
+      background: #0056b3;
+  }
+
+  @keyframes popupAnimation {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  </style>
+
+
+<!-- Chatbot Functionality -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const icon = document.getElementById('chatbot-icon');
+      const popup = document.getElementById('chatbot-popup');
+      const sendButton = document.getElementById('send-button');
+      const clearButton = document.getElementById('clear-button');
+      const userInput = document.getElementById('user-input');
+      const chatbox = document.getElementById('chat-messages');
+
+      // Open Chat
+      icon.addEventListener('click', function() {
+          if (popup.style.display === 'none' || popup.style.display === '') {
+              popup.style.display = 'block';
+              if (chatbox.innerHTML.trim() === '') {
+                  addBotMessage("Hello! 👋 How can I assist you today regarding house rental in Nepal?");
+              }
+          } else {
+              popup.style.display = 'none';
+          }
+      });
+
+      // Close chat when clicking outside
+      window.addEventListener('click', function(event) {
+          if (!popup.contains(event.target) && event.target !== icon) {
+              popup.style.display = "none";
+          }
+      });
+
+      // Send Message
+      sendButton.addEventListener('click', async function() {
+          const message = userInput.value.trim();
+          if (!message) return;
+
+          addUserMessage(message);
+          userInput.value = '';
+          chatbox.scrollTop = chatbox.scrollHeight;
+
+          // Typing Animation
+          addBotMessage("Typing...");
+          chatbox.scrollTop = chatbox.scrollHeight;
+
+          try {
+              const response = await fetch('/chat/get-response/?message=' + encodeURIComponent(message));
+              const data = await response.json();
+
+              // Remove "Typing..."
+              chatbox.lastChild.remove();
+              addBotMessage(data.reply);
+              chatbox.scrollTop = chatbox.scrollHeight;
+          } catch (error) {
+              chatbox.lastChild.remove();
+              addBotMessage("Sorry, server error!");
+          }
+      });
+
+      // Clear Chat
+      clearButton.addEventListener('click', function() {
+          chatbox.innerHTML = '';
+          addBotMessage("Chat cleared. How can I assist you?");
+      });
+
+      // Helper Functions
+      function addUserMessage(msg) {
+          const div = document.createElement('div');
+          div.className = 'user-message';
+          div.innerHTML = `<b>You:</b> ${msg}`;
+          chatbox.appendChild(div);
+      }
+      function addBotMessage(msg) {
+          const div = document.createElement('div');
+          div.className = 'bot-message';
+          div.innerHTML = `<b>Bot:</b> ${msg}`;
+          chatbox.appendChild(div);
+      }
+  });
+  </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  <script>
+    {% if messages %}
+        {% for message in messages %}
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "timeOut": "5000",
+            };
+            toastr["{{ message.tags }}"]("{{ message|escapejs }}");
+        {% endfor %}
+    {% endif %}
+</script>
+</body>
+</html>

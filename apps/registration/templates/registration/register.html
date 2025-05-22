@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block styles %}
+  <title>Sign Up</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="/static/registration/css/loginPage.css">
+  <style>
+    .errorlist li{
+        color: red;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+  <section class="main-container">
+    <div class="container">
+      <div class="forms-container">
+        <div class="signin-signup">
+          <form action="#" class="sign-in-form" method="POST">
+            {{form.errors}}
+            {% csrf_token %}
+            <h2 class="title">Sign Up</h2>
+            <div class="input-field">
+              <i class="fas fa-user"></i>
+              {{form.username}}
+            </div>
+            <div class="input-field">
+              <i class="fas fa-envelope"></i>
+              {{form.email}}
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              {{form.password1}}
+            </div>
+            <div class="input-field">
+              <i class="fas fa-lock"></i>
+              {{form.password2}}
+            </div>
+            <input type="submit" value="Sign Up" class="btn solid"/>
+          </form>
+
+        </div>
+      </div>
+
+      <div class="panels-container">
+        <div class="panel left-panel">
+          <div class="content">
+            <h3>Already have an account?</h3>
+            <a href="{% url 'login' %}"><button class="btn transparent" id="sign-up-btn">
+                Sign In
+              </button></a>
+          </div>
+          <img src="/static/registration/images/loginpageimage2.png" class="image" alt="" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/registration/js/register.js">
+  </script>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Profile {% endblock %}
+
+{% block content %}
+    <div class="box">
+        <h1 class="title">Customer  - {{ customer.name }}</h1>
+
+
+        <a href="{% url 'edit_profile' %}" class="button is-info is-uppercase">Edit</a>
+    </div>
+
+    <div class="box">
+        <h2 class="is-size-3 mb-4">My Properties</h2>
+
+        <a href="{% url 'add_property' %}" class="button is-dark is-uppercase mb-6">Add Property</a>
+
+        {% if property %}
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for property in property %}
+                        <tr>
+                            <td><a href="{% url 'property' property.category.slug property.slug %}">{{ property.title }}</a></td>
+                            <td>{{ property.category }}</td>
+                            <td>Rs. {{ property.price }}</td>
+                            <td><a href="{% url 'edit_property' property.id %}">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>You don't have any products yet...</p>
+        {% endif %}
+    </div>
+
+    <div class="box">
+        <h2 class="is-size-3 mb-4">My Bookings</h2>
+
+        {% if bookings %}
+            {% for booking in bookings %}
+                <div class="{% if order.fully_paid %}has-background-success-light{% else %}has-background-info-light{% endif %} mb-2 p-4">
+                    <div class="columns is-multiline">
+                        <div class="column is-6">
+                            <h3 class="is-size-4">#{{ booking.id }} - {{ booking.first_name }} {{ booking.last_name }}</h3>
+                        </div>
+
+                        <div class="column is-12">
+                            <b>Name:</b> {{ booking.first_name }} {{ booking.last_name }}<br>
+                            <b>Address:</b> {{ booking.address }}<br>
+                            <b>Zip and place:</b> {{ booking.zipcode }} {{ booking.place }}<br>
+                            <b>E-mail:</b> {{ booking.email }}<br>
+                            <b>Phone:</b> {{ booking.phone }}
+
+                            <table class="table is-fullwidth mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Property Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Paid</th>
+                                        <th>Paid At</th>
+                                        <th>Payment Status</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for item in booking.items.all %}
+                                        {% if item.customer == request.user.customer %}
+                                            <tr>
+                                                <td>
+                                                            <img src="{{ item.property.get_thumbnail }}" alt="{{ item.property.title }}"
+                                                                style="width: 120px; height: 90px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" />
+                                                            </td>
+
+                                                <td>{{ item.property.title }}</td>
+                                                <td>Rs{{ item.property.price }}</td>
+                                                <td>{{ item.quantity }}</td>
+                                                <td>{{ item.customer_paid|yesno:"Yes,No" }}</td>
+                                                <td>{{ item.get_payment_log.paid_at|date:"F j, Y, g:i A" }}</td>
+                                                <td>{{ item.get_payment_log.status }}</td>
+                                                <td>Rs{{ item.get_total_price }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock content %}

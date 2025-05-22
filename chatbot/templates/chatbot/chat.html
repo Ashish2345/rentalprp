@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot</title>
+
+    <style>
+    /* Chatbot Icon Styling */
+    #chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+        z-index: 1000;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        animation: blink 1.5s infinite alternate;
+        background-color: transparent;
+        border: none;
+    }
+
+    @keyframes blink {
+        from {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+        }
+        to {
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.8);
+        }
+    }
+
+    /* Popup Chat Window Styling */
+    #chatbot-popup {
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 340px;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+        padding: 10px;
+        z-index: 1000;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        animation: popupAnimation 0.3s ease;
+    }
+
+    #chat-messages {
+        height: 300px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #f7f7f7;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .user-message {
+        text-align: right;
+        background: #d1e7ff;
+        color: #000;
+        padding: 8px 12px;
+        margin: 5px;
+        display: inline-block;
+        border-radius: 18px 18px 2px 18px;
+        max-width: 80%;
+    }
+
+    .bot-message {
+        text-align: left;
+        background: #e5e5e5;
+        color: #000;
+        padding: 8px 12px;
+        margin: 5px;
+        display: inline-block;
+        border-radius: 18px 18px 18px 2px;
+        max-width: 80%;
+    }
+
+    #chat-inputs {
+        display: flex;
+    }
+
+    #user-input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    #send-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        cursor: pointer;
+    }
+    #send-button:hover {
+        background-color: #0056b3;
+    }
+
+    @keyframes popupAnimation {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    </style>
+
+</head>
+<body>
+
+    <!-- Floating Chatbot Icon -->
+    <img id="chatbot-icon" src="{% static '/core/images/chatbot.jpg' %}" alt="Chatbot Icon" />
+
+    <!-- Popup Chat Window -->
+    <div id="chat-inputs">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+        <button id="clear-button">Clear</button> <!-- Add Clear button -->
+    </div>
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const icon = document.getElementById('chatbot-icon');
+            const popup = document.getElementById('chatbot-popup');
+            const sendButton = document.getElementById('send-button');
+            const clearButton = document.getElementById('clear-button');
+            const userInput = document.getElementById('user-input');
+            const chatbox = document.getElementById('chat-messages');
+        
+            // Open Chat
+            icon.addEventListener('click', function() {
+                if (popup.style.display === 'none' || popup.style.display === '') {
+                    popup.style.display = 'block';
+                    if (chatbox.innerHTML.trim() === '') {
+                        addBotMessage("Hello! 👋 How can I assist you today regarding house rental in Nepal?");
+                    }
+                } else {
+                    popup.style.display = 'none';
+                }
+            });
+        
+            // Close chat when clicking outside
+            window.addEventListener('click', function(event) {
+                if (!popup.contains(event.target) && event.target !== icon) {
+                    popup.style.display = "none";
+                }
+            });
+        
+            // Send Message
+            sendButton.addEventListener('click', async function() {
+                const message = userInput.value.trim();
+                if (!message) return;
+        
+                addUserMessage(message);
+                userInput.value = '';
+                chatbox.scrollTop = chatbox.scrollHeight;
+        
+                // Typing Animation
+                addBotMessage("Typing...");
+                chatbox.scrollTop = chatbox.scrollHeight;
+        
+                try {
+                    const response = await fetch('/chat/get-response/?message=' + encodeURIComponent(message));
+                    const data = await response.json();
+        
+                    // Remove "Typing..."
+                    chatbox.lastChild.remove();
+                    addBotMessage(data.reply);
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                } catch (error) {
+                    chatbox.lastChild.remove();
+                    addBotMessage("Sorry, server error!");
+                }
+            });
+        
+            // Clear Chat
+            clearButton.addEventListener('click', function() {
+                chatbox.innerHTML = '';
+                addBotMessage("Chat cleared. How can I assist you?");
+            });
+        
+            // Helper Functions
+            function addUserMessage(msg) {
+                const div = document.createElement('div');
+                div.className = 'user-message';
+                div.innerHTML = `<b>You:</b> ${msg}`;
+                chatbox.appendChild(div);
+            }
+            function addBotMessage(msg) {
+                const div = document.createElement('div');
+                div.className = 'bot-message';
+                div.innerHTML = `<b>Bot:</b> ${msg}`;
+                chatbox.appendChild(div);
+            }
+        });
+        </script>
+        
+
+</body>
+</html>

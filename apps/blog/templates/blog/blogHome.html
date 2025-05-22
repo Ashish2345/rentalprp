@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block styles %}
+<title>Home Rental-Blog</title>
+<link rel="stylesheet" href="{% static '/blog/css/blogHome.css' %}">
+{% endblock styles %}
+
+{% block content %}
+  <section class="blog-content">
+    <section class="blog-title">
+      <h1>HOME RENTAL BLOG</h1>
+    </section>
+    <section class="blog">
+      {% for post in post_list %}
+      <div class="blog-post">
+        <div class="blog-post_info">
+          <h1 class="blog-post_title">{{ post.title }}</h1>
+          <div class="blog-post_date">
+            <span>{{ post.author }} | {{ post.created_on}}</span>
+          </div>
+          <div class="blog-post_text">
+            <p>{{post.content|slice:":200"|safe}}</p>
+          </div>
+          <a href="{% url 'blog_detail' post.slug %}" class="blog-post_cta">Read More &rarr;</a>
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+  </section>
+{% endblock content %}

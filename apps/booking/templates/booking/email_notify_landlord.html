@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+        <title>Home Rental</title>
+
+        <style type="text/css">
+            html {
+                width: 100%;
+            }
+
+            body {
+                width: 100%;
+                font-family: Arial;
+                font-size: 14px;
+                color: #333;
+            }
+
+            table {
+              border: 1px solid;
+              border-collapse: collapse;
+            }
+
+            tr {
+              border-bottom: 1pt solid black;
+              text-align: center;
+            }
+
+
+        </style>
+    </head>
+
+    <body>
+        Hey {{customer.name}}!
+        <br>
+
+        Your property has been booked by {{booking.first_name}} {{booking.last_name}}.
+        <br>
+
+        The booking detail has been given below:
+        <br>
+        <br>
+        <table width="50%" cellspacing="0" cellpadding="0">
+            <tr class="heading">
+                <td style="text-align: center;"><h1>New booking</h1></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <div>
+                        <h3 style="text-decoration: underline;">Details</h3>
+                        <b>Name:</b> {{ booking.first_name }} {{ booking.last_name }}<br>
+                        <b>Address:</b> {{ booking.address }}<br>
+                        <b>Zip and place:</b> {{ booking.zipcode }} {{ booking.place }}<br>
+                        <b>E-mail:</b> {{ booking.email }}<br>
+                        <b>Phone:</b> {{ booking.phone }}
+                    </div>
+
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <h3 style="text-decoration: underline; text-align: center;">Payment Details</h3>
+
+                    <table width="100%" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td><b>Property</b></td>
+                            <td><b>Price</b></td>
+                            <td><b>Total</b></td>
+                        </tr>
+
+                        {% for item in booking.items.all %}
+                            {% if item.customer == customer %}
+                                <tr>
+                                    <td>{{ item.property.title }}</td>
+                                    <td>NPR:{{ item.property.price }}</td>
+                                    <td>NPR:{{ item.get_total_price }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

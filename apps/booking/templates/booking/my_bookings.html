@@ -1,0 +1,65 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}Property{% endblock %}
+
+{% block styles %}
+
+
+   <link rel="stylesheet" href="{% static '/home/css/frontPage.css' %}">
+
+      <style>
+   .product-list-item{
+       transition: transform 0.3s ease-in-out;
+
+   }
+
+   .product-list-item:hover {
+       transform: scale(1.1);
+       /* Adjust the scale factor as needed */
+
+   }
+</style>
+{% endblock %}
+
+{% block content %}
+   <div class="columns is-multiline mb-6">
+      <div class="column is-12 has-text-centered mt-6 mb-6">
+         <h2 class="is-size-3">My Orders</h2>
+      </div>
+
+      {% for my_property in my_properties %}
+
+
+            <div class="column is-3 product-list-item">
+                <div class="box">
+                <figure class="image is-4by3 mb-4">
+                    <img src="{{ my_property.property.get_thumbnail }}" alt="">
+                </figure>
+
+                <h2 class="subtitle" style="color: rgba(0, 136, 169.8);">{{ my_property.property.title |truncatechars:15 }}</h2>
+                    <div class="mb-3">
+                        <h3 class="title is-5 has-text-success">
+                        Rs {{ my_property.property.price }}
+                        <span class="subtitle is-6 has-text-grey">per month</span>
+                        </h3>
+                    </div>
+
+                    <div class="content">
+                        <p><strong>Category:</strong> {{ my_property.property.category }}</p>
+                        <p><strong>Paid:</strong> {% if my_property.customer_paid %}
+      ✔️
+    {% else %}
+      ❌
+    {% endif %}</p>
+                        <p><strong>Quantity:</strong> {{ my_property.quantity }}</p>
+                    </div>
+
+                    <hr>
+                <a href="{% url 'property' my_property.property.category.slug my_property.property.slug %}" class="button is-dark is-uppercase">View</a>
+                </div>
+            </div>
+      {% endfor %}
+
+   </div>
+{% endblock %}

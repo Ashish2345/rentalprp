@@ -1,0 +1,256 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Cart | {% endblock %}
+
+{% block content %}
+    <h1 class="title">Cart</h1>
+
+    {% if cart %}
+        <div class="box mb-6">
+            <div class="table">
+                <table class="table is-fullwidth is-striped">
+                    <thead>
+                        <th></th>
+                        <th>Property</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th></th>
+                    </thead>
+
+                    <tbody>
+                        {% for item in cart %}
+                            <tr>
+                                <td>
+                                    <figure class="image is-64x64">
+                                        <img src="{{ item.property.get_thumbnail }}">
+                                    </figure>
+                                </td>
+                                <td>
+                                    <a href="{% url 'property' item.property.category.slug item.property.slug %}">{{ item.property.title }}</a>
+                                </td>
+                                <td>
+                                    {{ item.property.category }}
+                                </td>
+                                <td>Rs. {{ item.total_price }}</td>
+                                <td><a href="?remove_from_cart={{ item.id }}" class="delete">Remove</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td><strong>Total cost</strong></td>
+                            <td><strong>{{ cart|length}}</strong></td>
+                            <td colspan="2"><strong>Rs. {{ cart.get_total_cost }}</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <h2 class="subtitle">Contact information</h2>
+
+        <form method="post" action="" id="CheckoutForm">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="notification is-danger">
+                    {{ form.non_field_errors}}
+                </div>
+            {% endif %}
+
+            {% if form.errors %}
+                <div class="notification is-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}: </strong>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="field">
+                        <label>First name</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="first_name" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Last name</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="last_name" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>E-mail</label>
+
+                        <div class="control">
+                            <input class="input" type="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Phone</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="phone" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-6">
+                    <div class="field">
+                        <label>Address</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="address" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Zip code</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="zipcode" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>Place</label>
+
+                        <div class="control">
+                            <input class="input" type="text" name="place" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <button id="payButton" type="submit"  >Pay </button>
+                </div>
+            </div>
+        </form>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://unpkg.com/khalti-checkout-web"></script>
+        <script>
+            document.getElementById('CheckoutForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                // Get the course fee from your Django template
+                var originalFee = parseFloat("{{ cart.get_total_cost }}");
+                var discountedFee = originalFee;
+
+                // Prompt the user for the coupon code using Swal
+                Swal.fire({
+                    imageUrl: "https://indian-retailer.s3.ap-south-1.amazonaws.com/s3fs-public/2022-10/Coupons.jpg",
+                    imageWidth: 400,
+                    imageHeight: 200,
+                    imageAlt: "Custom image",
+                    title: 'Apply Coupon Code',
+                    input: 'text',
+                    inputPlaceholder: 'Enter coupon code...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Apply',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Check the entered coupon code and apply discount
+                        var couponCode = result.value.toLowerCase();
+                        if (couponCode === 'home10') {
+                            // Apply 10% discount
+                            discountedFee = originalFee - (originalFee * 0.10);
+                        } else if (couponCode === 'home5') {
+                            // Apply 15% discount
+                            discountedFee = originalFee - (originalFee * 0.50);
+                        }
+
+                        // Show a Swal confirmation with the updated fee
+                        Swal.fire({
+                            imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Khalti_Digital_Wallet_Logo.jpg/1200px-Khalti_Digital_Wallet_Logo.jpg?20180702123857",
+                            imageWidth: 400,
+                            imageHeight: 200,
+                            imageAlt: "Custom image",
+                            title: 'Fee Details',
+                            html: '<p>Original Fee: NPR ' + originalFee + '</p>' +
+                                '<p>Discounted Fee: NPR ' + discountedFee + '</p>',
+                            confirmButtonText: 'Proceed to Payment',
+                            showCancelButton: true,
+                            cancelButtonText: 'Cancel',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                if (result.isConfirmed) {
+                                        const courseFee = Math.round(discountedFee * 100);  // in paisa
+                                        const productId = 'order_' + Math.floor(Math.random() * 1000000);
+
+                                        // Get user details from the form
+                                        const form = document.getElementById('CheckoutForm');
+                                        const formData = new FormData(form);
+
+                                        const userDetails = {
+                                            first_name: formData.get('first_name'),
+                                            last_name: formData.get('last_name'),
+                                            email: formData.get('email'),
+                                            phone: formData.get('phone'),
+                                            address: formData.get('address'),
+                                            zipcode: formData.get('zipcode'),
+                                            place: formData.get('place'),
+                                        };
+
+                                        fetch('/cart/initiate-khalti/', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                                            },
+                                            body: JSON.stringify({
+                                                amount: courseFee,
+                                                product_id: productId,
+                                                user: userDetails  // 🟢 sending all user fields
+                                            })
+                                        })
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if (data.payment_url) {
+                                                window.location.href = data.payment_url;
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: 'Unable to initiate payment.',
+                                                });
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'Something went wrong.',
+                                            });
+                                        });
+                                    }
+                            }
+                        });
+                    }
+                });
+            });
+          </script>
+
+{% else %}
+        <p>You don't have any properties in your cart!</p>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

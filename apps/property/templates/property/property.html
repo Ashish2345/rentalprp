@@ -1,0 +1,190 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}{{property.title}}{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static '/property/css/main.css' %}">
+{% endblock %}
+
+{% block content %}
+    <p class="property-nav"><a href="{% url 'frontpage' %}">Properties</a>/ {{property.title}}</p>
+    <hr style="margin-bottom:100px;">
+
+    <h1 class="title">{{ property.title }} <span style="color: green; font-size: 25px; margin-left:30px;">Rs  {{ property.price }} <span class="price is-size-6" style="color: grey;">per month</span></span></h1>
+
+    <p class="mb-6"><span class="tag is-dark">Landlord - {{ property.customer.name }}</span></p>
+<hr>
+
+    <div id="propertyapp">
+    {% if property.image %}
+        <figure class="image is-2by1 mb-6">
+            {% comment %} <img :src="mainImage.image" class="img-thumbnail"> {% endcomment %}
+            <img src="{{ property.get_thumbnail }}" alt="">
+
+        </figure>
+    {% endif %}
+
+    {% if property.images.all %}
+        <hr>
+
+        <div class="columns container">
+            <div class="column is-1 images" v-for="image in images" v-bind:key="image.id">
+                <img :src="image.thumbnail" @click="changeMainImage(image)" class="img-thumbnail img-fluid w-100 h-100">
+            </div>
+        </div>
+    {% endif %}
+
+        <br>
+
+        <h4>Description</h4>
+        <hr>
+    <p>{{ property.description }}</p>
+
+
+
+
+
+        <p></p>
+    <br><br>
+
+        <h4>Location on map:</h4>
+        <hr>
+        <button class="btn btn-primary btn-sm view-map-btn" data-toggle="modal"
+        data-target="#mapModal" data-latitude="{{ property.latitude }}"
+        data-longitude="{{ property.longitude }}">
+        View on Map
+    </button>
+            <br>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="notification is-success is-toast">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not property.customer.id == request.user.customer.id and property.status == "available" %}
+        <br><br>
+        <h4>Liked the property?</h4>
+        <hr>
+    <form method="post" action="." class="down">
+        {% csrf_token %}
+
+        <div class="field has-addons">
+            <div class="control">
+                <input type="number" name="quantity" value="1" class="input" min="1">
+            </div>
+
+            <div class="control">
+                <button class="button is-dark is-uppercase">Book Now</button>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+    <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Map Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Map container -->
+                    <div id="map" style="height: 500px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if similar_property %}
+        <hr class="hr">
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                <h2 class="subtitle">Similar Properties</h2>
+            </div>
+
+            {% for property in similar_property %}
+                {% include 'property/parts/list_item.html' %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+{{ imagesstring|json_script:"json-imagesstring" }}
+<script src="https://unpkg.com/vue@next"></script>
+<script>
+    const PropertyApp = {
+        data() {
+            return {
+                mainImage: '',
+                images: []
+            }
+        },
+        mounted() {
+            this.images = JSON.parse(JSON.parse(document.getElementById("json-imagesstring").textContent))
+            this.mainImage = this.images[0]
+        },
+        methods: {
+            changeMainImage(image) {
+                this.mainImage = image
+            }
+        }
+    }
+
+    Vue.createApp(PropertyApp).mount('#propertyapp')
+</script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    $(document).ready(function () {
+
+        $('.view-map-btn').on('click', function () {
+            var latitude = $(this).data('latitude');
+            var longitude = $(this).data('longitude');
+
+            // Wait for a short delay before initializing the Leaflet map
+            setTimeout(function () {
+                initLeafletMap(latitude, longitude);
+            }, 200);
+        });
+
+        // Function to initialize the Leaflet map
+        function initLeafletMap(latitude, longitude) {
+            // Create a map using Leaflet
+            var map = L.map('map').setView([parseFloat(latitude), parseFloat(longitude)], 15);
+
+            // Add a tile layer (you can choose a different provider)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            // Define a custom red marker icon
+            var redIcon = L.icon({
+                iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28],
+                shadowSize: [41, 41]
+            });
+            // Add a marker with the custom red icon for the location
+            L.marker([parseFloat(latitude), parseFloat(longitude)], { icon: redIcon }).addTo(map)
+
+                .openPopup();
+
+        }
+
+    });
+</script>
+{% endblock %}

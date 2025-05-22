@@ -1,0 +1,21 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}Property{% endblock %}
+
+{% block styles %}
+   <link rel="stylesheet" href="{% static '/home/css/frontPage.css' %}">
+{% endblock %}
+
+{% block content %}
+   <div class="columns is-multiline mb-6">
+      <div class="column is-12 has-text-centered mt-6 mb-6">
+         <h2 class="is-size-3">Newest Properties</h2>
+      </div>
+
+      {% for property in newest_property %}
+         {% include 'property/parts/list_item.html' %}
+      {% endfor %}
+
+   </div>
+{% endblock %}

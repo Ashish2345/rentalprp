@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+	  {% block styles %}
+	   <title>Contact Form</title>
+    <link rel="stylesheet" href="{% static '/core/css/contact.css' %}" />
+    <script
+      src="https://kit.fontawesome.com/64d58efce2.js"
+      crossorigin="anonymous"
+    ></script>
+  {% endblock styles %}
+
+  {% block content %}
+	<div class="container">
+      <img src="{% static '/core/images/shape.png' %}" class="square" alt="" />
+      <div class="form">
+        <div class="contact-info">
+          <h3 class="title">Let's get in touch</h3>
+
+
+          <div class="info">
+            <div class="information">
+              <img src="{% static '/core/images/location.png' %}" class="icon" alt="" />
+              <p>Naxal, Kathmandu</p>
+            </div>
+            <div class="information">
+              <img src="{% static '/core/images/email.png' %}" class="icon" alt="" />
+              <p>amitbabukhatri@gmail.com</p>
+            </div>
+            <div class="information">
+              <img src="{% static '/core/images/phone.png' %}" class="icon" alt="" />
+              <p>+977 - 9867980550</p>
+            </div>
+          </div>
+
+          <div class="social-media">
+            <p>Connect with us :</p>
+            <div class="social-icons">
+              <a href="https://fb.me/">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://twitter.com">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="https://www.instagram.com//">
+                <i class="fab fa-instagram"></i>
+              </a>
+            </div>
+            <br>
+            <br>
+            <p><a href="{% url 'about' %}" style="color: black;" onMouseOver="this.style.color='#2596be'"
+   onMouseOut="this.style.color='black'">About Us</a></p>
+          </div>
+        </div>
+
+        <div class="contact-form">
+          <span class="circle one"></span>
+          <span class="circle two"></span>
+
+          <form action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            <h3 class="title">Contact us</h3>
+            <div class="input-container">
+              <input type="text" name="name" class="input" />
+              <label for="">Username</label>
+              <span>Username</span>
+            </div>
+            <div class="input-container">
+              <input type="email" name="email" class="input" />
+              <label for="">Email</label>
+              <span>Email</span>
+            </div>
+            <div class="input-container">
+              <input type="tel" name="phone" class="input" />
+              <label for="">Phone</label>
+              <span>Phone</span>
+            </div>
+            <div class="input-container textarea">
+              <textarea name="message" class="input"></textarea>
+              <label for="">Message</label>
+              <span>Message</span>
+            </div>
+            <input type="submit" value="Send" class="btn" />
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+
+  {% block script %}
+    <script src=""></script>
+	<script src="{% static '/core/js/contact.js' %}"></script>
+  {% endblock script %}

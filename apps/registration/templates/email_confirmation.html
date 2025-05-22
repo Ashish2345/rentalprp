@@ -1,0 +1,9 @@
+{% autoescape off %}
+
+ <p>Welcome to NepalRental - Login!!</p>
+ <p>Hello {{ name }}!!</p>
+ <p>Please confirm your email by clicking on the following link.</p>
+
+ <p>Confirmation Link: http://{{ domain }}{% url 'verify-email' uidb64=uid token=token %}</p>
+
+ {% endautoescape %}

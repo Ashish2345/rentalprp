@@ -1,0 +1,46 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block content %}
+   <div class="columns is-multiline mb-6">
+      <div class="column is-12 has-text-centered mt-6 mb-6">
+         <h2 class="is-size-3">Search</h2>
+<div class="box mb-5">
+    <form method="get" action="{% url 'search' %}">
+        <div class="columns is-multiline is-vcentered">
+            <div class="column is-3">
+                <input class="input" type="text" name="query" value="{{ query }}" placeholder="Search term">
+            </div>
+            <div class="column is-3">
+                <div class="select is-fullwidth">
+                    <select name="category">
+                        <option value="">All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.slug }}" {% if cat.slug == selected_category %}selected{% endif %}>
+                                {{ cat.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="column is-2">
+                <input class="input" type="number" name="min_price" value="{{ min_price }}" placeholder="Min Price">
+            </div>
+            <div class="column is-2">
+                <input class="input" type="number" name="max_price" value="{{ max_price }}" placeholder="Max Price">
+            </div>
+            <div class="column is-2">
+                <button class="button is-dark is-fullwidth" type="submit">Filter</button>
+            </div>
+        </div>
+    </form>
+</div>
+          <h3>Search term: "{{ query }}"</h3>
+      </div>
+      {% for property in property %}
+         {% include 'property/parts/list_item.html' %}
+      {% endfor %}
+   </div>
+{% endblock %}
