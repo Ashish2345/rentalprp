@@ -16,6 +16,7 @@ class Category(models.Model):
     def __str__(self):
         return self.title
 
+from cloudinary.models import CloudinaryField
 
 class Property(models.Model):
     STATUS_CHOICES = [
@@ -32,7 +33,10 @@ class Property(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     date_added = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='uploads/property/', blank=True, null=True)
+    image = CloudinaryField('property', blank=True, null=True)
+    thumbnail = CloudinaryField('thumbnail', blank=True, null=True)
+
+    models.ImageField(upload_to='uploads/property/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/thumbnail/', blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
 

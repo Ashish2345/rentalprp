@@ -18,6 +18,11 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -57,6 +62,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'cloudinary_storage',
+    'cloudinary',
 
     'crispy_forms',
     'bootstrap4',  # Ensure this is included
@@ -242,5 +250,13 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Cloudinary configuration
 
+cloudinary.config(
+  	cloud_name = "dliqrslp0",
+  	api_key = "728446114843378",
+  	api_secret = "Kv6YJx2wzWCef96tRR8Hd_qdTdE"
+)
+
+DEFAULT_FILE_STORAGE = 'NepalRental.storage.CloudinaryStorage'
 
