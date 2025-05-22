@@ -36,8 +36,6 @@ class Property(models.Model):
     image = CloudinaryField('property', blank=True, null=True)
     thumbnail = CloudinaryField('thumbnail', blank=True, null=True)
 
-    models.ImageField(upload_to='uploads/property/', blank=True, null=True)
-    thumbnail = models.ImageField(upload_to='uploads/thumbnail/', blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='available')
 
     class Meta:
@@ -49,14 +47,10 @@ class Property(models.Model):
     def get_thumbnail(self):
         if self.thumbnail:
             return self.thumbnail.url
-        else:
-            if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
-                self.save()
+        elif self.image:
+            return self.image.url
+        return self.image.url
 
-                return self.thumbnail.url
-            else:
-                return 'https://via.placeholder.com/240x180.jpg'
 
     def make_thumbnail(self, image, size=(300, 200)):
         img = Image.open(image)
