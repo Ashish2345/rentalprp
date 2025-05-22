@@ -43,28 +43,33 @@ class Command(BaseCommand):
         self.stdout.write("Seeding database...")
 
         # Create Users and Customers
-        users = []
-        for i in range(3):
-            username = f'user{i+1}'
-            user = User.objects.create_user(username=username, email=fake.email(),password='@kaSrv11')
-            customer = Customer.objects.create(
-                name=fake.name(),
-                is_email_verified=True,
-                created_by=user
-            )
-            users.append(customer)
-            self.stdout.write(self.style.SUCCESS(f"Created user and customer: {username}"))
+        userss = []
+        for users in Customer.objects.all():
+
+            userss.append(users)
+        # for i in range(3):
+        #     username = f'user{i+1}'
+        #     user = User.objects.create_user(username=username, email=fake.email(),password='@kaSrv11')
+        #     customer = Customer.objects.create(
+        #         name=fake.name(),
+        #         is_email_verified=True,
+        #         created_by=user
+        #     )
+        #     users.append(customer)
+        #     self.stdout.write(self.style.SUCCESS(f"Created user and customer: {username}"))
 
         # Create Categories
         categories = []
-        for i, cat_title in enumerate(['house', 'apartment', 'flat']):
-            category, _ = Category.objects.get_or_create(
-                title=cat_title,
-                slug=slugify(cat_title),
-                ordering=i
-            )
-            categories.append(category)
-            self.stdout.write(self.style.SUCCESS(f"Created category: {cat_title}"))
+        for catg in Category.objects.all():
+            categories.append(catg)
+        # for i, cat_title in enumerate():
+        #     category, _ = Category.objects.get_or_create(
+        #         title=cat_title,
+        #         slug=slugify(cat_title),
+        #         ordering=i
+        #     )
+        #     categories.append(category)
+        #     self.stdout.write(self.style.SUCCESS(f"Created category: {cat_title}"))
 
         # Create Properties
         for i in range(10):
@@ -76,7 +81,7 @@ class Command(BaseCommand):
                 latitude=fake.latitude(),
                 longitude=fake.longitude(),
                 price=round(random.uniform(10000, 50000), 2),
-                customer=random.choice(users),
+                customer=random.choice(userss),
                 category=random.choice(categories),
             )
 
