@@ -48,6 +48,7 @@ EMAIL_HOST_PASSWORD = 'aumd chfc duzk gjfz'
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'chatbot',
     'jazzmin',
     'django.contrib.admin',
@@ -72,6 +73,7 @@ INSTALLED_APPS = [
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
