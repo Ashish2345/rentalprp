@@ -66,4 +66,4 @@ urllib3==2.4.0
 whitenoise==6.9.0
 cloudinary==1.36.0
 django-cloudinary-storage==0.3.0
-pillow==10.1.0
+pillow==11.2.1
