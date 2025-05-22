@@ -43,44 +43,44 @@ class Command(BaseCommand):
         self.stdout.write("Seeding database...")
 
         # Create Users and Customers
-        # users = []
-        # for i in range(3):
-        #     username = f'user{i+1}'
-        #     user = User.objects.create_user(username=username, email=fake.email(),password='@kaSrv11')
-        #     customer = Customer.objects.create(
-        #         name=fake.name(),
-        #         is_email_verified=True,
-        #         created_by=user
-        #     )
-        #     users.append(customer)
-        #     self.stdout.write(self.style.SUCCESS(f"Created user and customer: {username}"))
+        users = []
+        for i in range(3):
+            username = f'user{i+1}'
+            user = User.objects.create_user(username=username, email=fake.email(),password='@kaSrv11')
+            customer = Customer.objects.create(
+                name=fake.name(),
+                is_email_verified=True,
+                created_by=user
+            )
+            users.append(customer)
+            self.stdout.write(self.style.SUCCESS(f"Created user and customer: {username}"))
 
-        # # Create Categories
-        # categories = []
-        # for i, cat_title in enumerate(['house', 'apartment', 'flat']):
-        #     category, _ = Category.objects.get_or_create(
-        #         title=cat_title,
-        #         slug=slugify(cat_title),
-        #         ordering=i
-        #     )
-        #     categories.append(category)
-        #     self.stdout.write(self.style.SUCCESS(f"Created category: {cat_title}"))
+        # Create Categories
+        categories = []
+        for i, cat_title in enumerate(['house', 'apartment', 'flat']):
+            category, _ = Category.objects.get_or_create(
+                title=cat_title,
+                slug=slugify(cat_title),
+                ordering=i
+            )
+            categories.append(category)
+            self.stdout.write(self.style.SUCCESS(f"Created category: {cat_title}"))
 
-        # # Create Properties
-        # for i in range(10):
-        #     title = fake.address()
-        #     prop = Property.objects.create(
-        #         title=title,
-        #         slug=slugify(title),
-        #         description=fake.text(),
-        #         latitude=fake.latitude(),
-        #         longitude=fake.longitude(),
-        #         price=round(random.uniform(10000, 50000), 2),
-        #         customer=random.choice(users),
-        #         category=random.choice(categories),
-        #     )
+        # Create Properties
+        for i in range(10):
+            title = fake.address()
+            prop = Property.objects.create(
+                title=title,
+                slug=slugify(title),
+                description=fake.text(),
+                latitude=fake.latitude(),
+                longitude=fake.longitude(),
+                price=round(random.uniform(10000, 50000), 2),
+                customer=random.choice(users),
+                category=random.choice(categories),
+            )
 
-        #     self.stdout.write(self.style.SUCCESS(f"Created property: {prop.title}"))
+            self.stdout.write(self.style.SUCCESS(f"Created property: {prop.title}"))
 
         self.update_property_images_same()
 

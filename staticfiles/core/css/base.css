@@ -1,0 +1,209 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap");
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/*styling for header of the page*/
+li,
+a,
+button {
+  font-weight: 500;
+  font-size: 16px;
+  color: #edf0f1;
+  text-decoration: none;
+}
+
+#heading {
+  background-color: #24252a;
+  /*background-color: #b1a296;*/
+}
+
+.heading_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10%;
+  height: 80px;
+}
+
+.logo {
+  cursor: pointer;
+  height: 120px;
+}
+
+.nav_linkss {
+  list-style: none;
+}
+
+.nav_linkss li {
+  display: inline-block;
+  padding: 0px 20px;
+}
+
+.nav_linkss li a {
+    color: white;
+    text-decoration: none;
+  transition: all 0.3s ease 0s;
+}
+
+.nav_linkss li a:hover {
+  color: #0088a9;
+}
+
+.buttons {
+  padding: 10px 20px;
+  background-color: rgba(0, 136, 169.8);
+  border: none;
+  border-radius: 55px;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+
+.buttons:hover {
+  background-color: rgba(0, 136, 169, 0.8);
+}
+.buttons_home {
+    margin-top:30px;
+  padding: 10px 30px;
+  background-color: rgba(0, 136, 169.8);
+  border: none;
+  border-radius: 55px;
+  cursor: pointer;
+  transition: all 0.3s ease 0s;
+}
+
+.buttons_home:hover {
+  background-color: rgba(0, 136, 169, 0.8);
+}
+
+/*footer*/
+#footer {
+  padding: 40px 0;
+  background-color: #24252a;
+  position: sticky;
+  top: 100%;
+}
+
+#footer .social {
+  text-align: center;
+  padding-bottom: 25px;
+  color: white;
+}
+
+#footer .social a {
+  font-size: 24px;
+  color: inherit;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+  margin: auto 8px;
+  opacity: 0.55;
+}
+
+#footer .social a:hover {
+  opacity: 0.9;
+}
+
+#footer ul {
+  margin-top: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+#footer ul li a {
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.55;
+}
+
+#footer ul li {
+  display: inline-block;
+  padding: 0 15px;
+}
+
+#footer ul li a:hover {
+  opacity: 1;
+}
+
+#footer .copyright {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #edf0f1;
+  opacity: 0.75;
+}
+
+.dropdown{
+  visibility: hidden;
+}
+
+@media screen and (max-width: 800px) {
+
+  .dropbtn {
+  background-color: White;
+  color: black;
+  padding: 10px 16px 10px 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  margin-left:80px ;
+  border-radius: 55px;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: black;
+  color:white;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  visibility: visible;
+  z-index: 5000;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd; text-decoration:none;}
+
+.show {display: block;}
+
+.nav_linkss{
+    visibility: hidden;
+}
+.buttons{
+  margin-left: -80px;
+}
+.logo{
+    margin-left: -50px;
+}

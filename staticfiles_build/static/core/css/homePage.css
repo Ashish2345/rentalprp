@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Italiana&display=swap");
+
+/*styling for background image*/
+#home {
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+/*styling for home*/
+.logo_home img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0px;
+}
+
+.logo_home {
+  height: 300px;
+}
+
+h1 {
+  font-family: "Italiana", sans-serif;
+  text-align: center;
+  margin: 70px auto 20px auto;
+  font-size: 40px;
+}
+
+.button_center {
+  text-align: center;
+}
+
+.home_btn {
+  margin-top: 10px;
+  height: 45px;
+  width: 150px;
+  font-size: 20px;
+}
+
+@media screen and (max-width: 570px){
+    .logo_home img {
+    width:340px;
+    height: 440px;
+    }
+
+    h1{
+    font-size: 30px;
+    margin: 10px auto;
+    }
+}
