@@ -231,7 +231,10 @@ STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+import os
+media_path = '/tmp/media'
+if not os.path.exists(media_path):
+    os.makedirs(media_path, exist_ok=True)
 MEDIA_URL = '/media/'
 
 # Default primary key field type
